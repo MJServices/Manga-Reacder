@@ -1,10 +1,14 @@
 {
+  "engines": {
+    "node": ">=14.0.0",
+    "python": ">=3.6.0"
+  },
   "name": "macorps",
   "version": "0.1.0",
   "private": true,
   "scripts": {
+  "build": "node-gyp rebuild",
     "dev": "next dev",
-    "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
