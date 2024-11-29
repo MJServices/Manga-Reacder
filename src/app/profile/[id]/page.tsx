@@ -4,18 +4,23 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { getUser  } from "@/utilities/getUser";
 
-const ProfilePage = ({ params }: { params: { id: string } }) => {
+interface ProfilePageProps {
+  params: {
+    id: string;
+  };
+}
+
+const ProfilePage: React.FC<ProfilePageProps> = ({ params }) => {
   const [profile, setProfile] = useState({ username: "", email: "" });
   const [updates, setUpdates] = useState({ username: "", email: "" });
   const [Id, setId] = useState("");
 
-
   useEffect(() => {
     const fetchUser  = async () => {
-      let {id} = await params
+      const { id } = params; // No need to await params
       if (id) {
         try {
-          const user: any = await getUser(id);
+          const user: any = await getUser (id);
           setProfile(user);
           setId(user._id);
         } catch (error) {
@@ -24,8 +29,8 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
       }
     };
 
-    fetchUser();
-  }, []);
+    fetchUser ();
+  }, [params]); // Add params as a dependency
 
   const handleUserChange = async () => {
     try {
