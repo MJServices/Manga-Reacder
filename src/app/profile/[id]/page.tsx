@@ -4,13 +4,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { getUser  } from "@/utilities/getUser";
 
-interface ProfilePageProps {
-  params: {
-    id: string;
-  };
-}
-
-const ProfilePage: React.FC<ProfilePageProps> = ({ params }) => {
+const ProfilePage = ({ params }: { params: { id: string } }) => {
   const [profile, setProfile] = useState({ username: "", email: "" });
   const [updates, setUpdates] = useState({ username: "", email: "" });
   const [Id, setId] = useState("");
