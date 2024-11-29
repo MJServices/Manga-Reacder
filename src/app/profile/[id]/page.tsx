@@ -4,14 +4,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { getUser  } from "@/utilities/getUser";
 
-// Define the type for the component props
-interface ProfilePageProps {
-  params: {
-    id: string; // Ensure this matches your dynamic route parameter
-  };
-}
-
-const ProfilePage: React.FC<ProfilePageProps> = ({ params }) => {
+// The component does not need a custom props type
+const ProfilePage = ({ params }: { params: { id: string } }) => {
   const [profile, setProfile] = useState({ username: "", email: "" });
   const [updates, setUpdates] = useState({ username: "", email: "" });
   const [Id, setId] = useState("");
