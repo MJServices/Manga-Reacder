@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { getUser  } from "@/utilities/getUser";
 
-// The component does not need a custom props type
+// Define the component with the correct props
 const ProfilePage = ({ params }: { params: { id: string } }) => {
   const [profile, setProfile] = useState({ username: "", email: "" });
   const [updates, setUpdates] = useState({ username: "", email: "" });
@@ -12,7 +12,7 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     const fetchUser  = async () => {
-      const { id } = params; // Destructure the id from params
+      const { id } = params; // Get the id from params
       if (id) {
         try {
           const user: any = await getUser (id);
