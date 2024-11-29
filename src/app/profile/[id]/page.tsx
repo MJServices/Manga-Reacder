@@ -4,14 +4,21 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { getUser  } from "@/utilities/getUser";
 
-const ProfilePage = ({ params }: { params: { id: string } }) => {
+// Define the type for the component props
+interface ProfilePageProps {
+  params: {
+    id: string; // Ensure this matches your dynamic route parameter
+  };
+}
+
+const ProfilePage: React.FC<ProfilePageProps> = ({ params }) => {
   const [profile, setProfile] = useState({ username: "", email: "" });
   const [updates, setUpdates] = useState({ username: "", email: "" });
   const [Id, setId] = useState("");
 
   useEffect(() => {
     const fetchUser  = async () => {
-      const { id } = params; // No need to await params
+      const { id } = params; // Destructure the id from params
       if (id) {
         try {
           const user: any = await getUser (id);
@@ -24,7 +31,7 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
     };
 
     fetchUser ();
-  }, [params]); // Add params as a dependency
+  }, [params]);
 
   const handleUserChange = async () => {
     try {
