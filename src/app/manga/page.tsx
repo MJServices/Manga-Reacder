@@ -1,8 +1,9 @@
-"use client"
+"use client";
 import { useState, useEffect } from "react";
 import { fetchRandomImage } from "@/utilities/fetchImages";
 import Image from "next/image";
 import Link from "next/link";
+import { fetchMangaList } from "@/utilities/mangaFetcher";
 
 const Page = () => {
   interface MangaItem {
@@ -17,34 +18,35 @@ const Page = () => {
     };
   }
 
-  const [animeImage, setAnimeImage] = useState<string | null>(null); // Store only a single image URL
+  const [animeImages, setAnimeImages] = useState<string[]>([]); // Store an array of image URLs
   const [manga, setManga] = useState<MangaItem[]>([]);
 
   useEffect(() => {
+    // Fetch random images
     const fetchImages = async () => {
-      const images: any[any] = await fetchRandomImage(); // Assuming this fetches an array of 10 images
-      setAnimeImage(images); // Set the array of images
+      const images: string[] = await fetchRandomImage(); // Assuming this fetches an array of 10 images
+      setAnimeImages(images); // Set the array of images
       console.log(images);
     };
     fetchImages();
 
+    // Fetch manga data
     const fetchData = async () => {
       try {
         console.log("Fetching manga data...");
-        const response = await fetch("https://api.mangadex.org/manga", {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          method: "GET",
-          mode: "cors",
-        });
-        const data = await response.json();
-        if (!data.data) {
+        const response = await fetchMangaList();
+        console.log(response);
+        if (!response.result) {
+          throw new Error("Failed to fetch manga data");
+        }
+        
+        const data = response;
+        if (!data || !data.data) {
           console.log("Manga not found");
           return;
         }
-        console.log(data);
-        setManga(data.data);
+        
+        setManga(data.data); // Assuming data.data is the array of manga
       } catch (error) {
         console.log(error);
       }
@@ -53,7 +55,7 @@ const Page = () => {
   }, []);
 
   return (
-    <div className="bg-[#142422] min-h-screen p-6">
+    <section className="bg-[#142422] min-h-screen p-6">
       <h1 className="text-4xl font-bold text-center text-emerald-500 mb-6">
         Anime and Manga List
       </h1>
@@ -63,11 +65,14 @@ const Page = () => {
             key={item.id}
             className="manga-item relative rounded-lg overflow-hidden border border-emerald-700 shadow-md bg-[#1a2e2b] hover:shadow-xl transition duration-300 ease-in-out h-[600px]"
           >
-            {animeImage && (
+            {/* Display a random anime image for each manga item */}
+            {animeImages[index] && (
               <Image
-                src={animeImage} // Use a single image for all items or assign different images if needed
+                src={animeImages[index]} // Use the image from the array
                 alt="Anime Image"
                 className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-300 ease-in-out"
+                height={600}
+                width={300}
               />
             )}
             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-[#142422] via-[#000000aa] to-transparent opacity-90"></div>
@@ -88,7 +93,7 @@ const Page = () => {
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 };
 
