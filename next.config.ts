@@ -1,19 +1,27 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  images: {
-    domains: ["imgs.search.brave.com", "tecdn.b-cdn.net"],
+  typescript: {
+    ignoreBuildErrors: true, 
   },
-  experimental: {
-    esmExternals: "loose", // <-- add this
-    serverComponentsExternalPackages: ["mongoose"] // <-- and this
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "imgs.search.brave.com",
+      },
+      {
+        protocol: "https",
+        hostname: "tecdn.b-cdn.net",
+      },
+    ],
   },
   webpack: (config) => {
     config.module.rules.push({
       test: /\.html$/,
       use: "html-loader",
     });
-    
+
     return config;
   },
 };

@@ -8,13 +8,7 @@ interface UserType {
   _id: string;
   username: string;
   email: string;
-  firstName: string; // User's first name
-  lastName: string;  // User's last name
-  role: string;      // User's role (e.g., "admin", "user")
-  createdAt: Date;   // Creation timestamp
-  updatedAt: Date;   // Last update timestamp
-  isActive: boolean;  // Indicates if the user is active
-  profilePictureUrl?: string; // Optional field for profile picture URL
+  role: string; 
 }
 
 export async function getUser (id: string): Promise<UserType> {
