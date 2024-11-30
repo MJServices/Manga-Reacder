@@ -33,25 +33,16 @@ const Page = () => {
     // Fetch manga data
     const fetchData = async () => {
       try {
-        console.log("Fetching manga data...");
         const response = await fetchMangaList();
-        console.log(response);
-        if (!response.result) {
-          throw new Error("Failed to fetch manga data");
+        if (!response || !response.data) {
+          throw new Error("No manga data found");
         }
-        
-        const data = response;
-        if (!data || !data.data) {
-          console.log("Manga not found");
-          return;
-        }
-        
-        setManga(data.data); // Assuming data.data is the array of manga
+        setManga(response.data);
       } catch (error) {
-        console.log(error);
+        console.error("Failed to fetch manga:", error);
       }
     };
-    fetchData();
+fetchData()    
   }, []);
 
   return (
@@ -73,6 +64,7 @@ const Page = () => {
                 className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-300 ease-in-out"
                 height={600}
                 width={300}
+                unoptimized
               />
             )}
             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-[#142422] via-[#000000aa] to-transparent opacity-90"></div>
