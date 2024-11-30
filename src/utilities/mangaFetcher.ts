@@ -1,7 +1,8 @@
 import axios from "axios";
-
+import { NextApiResponse } from "next";
 export const fetchMangaList = async () => {
   try {
+      // res.setHeader('Access-Control-Allow-Origin', '*')
     const response = await axios.get('https://api.mangadex.org/manga', {
     headers: {
       'Content-Type': 'application/json',

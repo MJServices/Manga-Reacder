@@ -37,11 +37,11 @@ const Page = () => {
     // Fetch manga data
     const fetchData = async () => {
       try {
-        const data = await fetchMangaList();
-        console.log("Fetched Manga Data:", data);
-
-        if (data && Array.isArray(data.data)) {
-          setManga(data.data); // Set the manga items properly if it is an array
+        const data = await fetch("/api/manga", { method: "GET" });
+        const res = await data.json();
+        if (res) {
+          console.log("Manga data:", res.data);
+          setManga(res.data)
         } else {
           console.log("Manga data is not in the expected format", data);
         }
