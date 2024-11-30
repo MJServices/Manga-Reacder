@@ -2,8 +2,6 @@ import axios from 'axios';
 
 export const fetchRandomImage = async () => {
     const uniqueImages = [];
-    const API_URL = 'https://pic.re/image';
-
     for (let i = 0; i < 10; i++) {
       try {
         const response = await axios.get(`https://api.waifu.pics/sfw/kill`);
