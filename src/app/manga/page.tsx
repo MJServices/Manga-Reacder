@@ -1,8 +1,7 @@
-"use client";
+import { useState, useEffect } from "react";
 import { fetchRandomImage } from "@/utilities/fetchImages";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
 
 const Page = () => {
   interface MangaItem {
@@ -17,20 +16,20 @@ const Page = () => {
     };
   }
 
-  let count = 0;
-  const [animeImage, setAnimeImage] = useState<string[] | null>(null);
-  const [manga, setmanga] = useState<MangaItem[]>([]);
+  const [animeImage, setAnimeImage] = useState<string | null>(null); // Store only a single image URL
+  const [manga, setManga] = useState<MangaItem[]>([]);
 
   useEffect(() => {
-    const fetchImage = async () => {
-      let image = await fetchRandomImage();
-      setAnimeImage(image);
-      console.log(image);
+    const fetchImages = async () => {
+      const images: any[any] = await fetchRandomImage(); // Assuming this fetches an array of 10 images
+      setAnimeImage(images); // Set the array of images
+      console.log(images);
     };
-    fetchImage();
+    fetchImages();
 
     const fetchData = async () => {
       try {
+        console.log("Fetching manga data...");
         const response = await fetch("https://api.mangadex.org/manga", {
           headers: {
             "Content-Type": "application/json",
@@ -40,17 +39,17 @@ const Page = () => {
         });
         const data = await response.json();
         if (!data.data) {
-          return <div>Manga not found</div>;
+          console.log("Manga not found");
+          return;
         }
         console.log(data);
-        setmanga(data.data);
+        setManga(data.data);
       } catch (error) {
         console.log(error);
       }
     };
     fetchData();
   }, []);
-  console.log(manga);
 
   return (
     <div className="bg-[#142422] min-h-screen p-6">
@@ -58,14 +57,14 @@ const Page = () => {
         Anime and Manga List
       </h1>
       <div className="manga-list grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {manga?.map((item) => (
+        {manga?.map((item, index) => (
           <div
             key={item.id}
             className="manga-item relative rounded-lg overflow-hidden border border-emerald-700 shadow-md bg-[#1a2e2b] hover:shadow-xl transition duration-300 ease-in-out h-[600px]"
           >
             {animeImage && (
               <Image
-                src={animeImage[count++]}
+                src={animeImage} // Use a single image for all items or assign different images if needed
                 alt="Anime Image"
                 className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-300 ease-in-out"
               />

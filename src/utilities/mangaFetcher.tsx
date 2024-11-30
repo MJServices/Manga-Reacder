@@ -9,7 +9,6 @@ export const fetchMangaList = async (req: NextApiRequest, res: NextApiResponse) 
   try {
     // Make the request with a proxy (if necessary)
     const response = await axios.get(PROXY_URL + MANGA_API_URL);
-
     // Check if response is valid
     if (response.status === 200) {
       // Set correct headers for JSON response
