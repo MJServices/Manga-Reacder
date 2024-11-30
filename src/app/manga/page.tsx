@@ -33,16 +33,17 @@ const Page = () => {
     // Fetch manga data
     const fetchData = async () => {
       try {
-        const response = await fetchMangaList();
-        if (!response || !response.data) {
-          throw new Error("No manga data found");
+        const data = await fetchMangaList();
+        if (data && data.data) {
+          setManga(data.data);  // Assuming the response structure is { data: [...] }
+        } else {
+          console.log('No manga data found');
         }
-        setManga(response.data);
       } catch (error) {
-        console.error("Failed to fetch manga:", error);
+        console.log('Error fetching manga:', error);
       }
     };
-fetchData()    
+    fetchData();
   }, []);
 
   return (
