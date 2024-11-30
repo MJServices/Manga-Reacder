@@ -1,6 +1,8 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import axios from "axios";
 
 interface MangaData {
   id: string;
@@ -11,7 +13,7 @@ interface MangaData {
     description: {
       en: string;
     };
-    coverImage: {
+    coverImage?: {
       url: string;
     };
     status: string;
@@ -29,12 +31,17 @@ const MangaPage = ({ params }: { params: Promise<{ id: string }> }) => {
   const [id, setId] = useState<string>("");
 
   useEffect(() => {
-    const fetchParams = async () => {
-      const resolvedParams = await params;
-      setId(resolvedParams.id);
+    const resolveParams = async () => {
+      try {
+        const resolvedParams = await params;
+        setId(resolvedParams.id);
+      } catch (err) {
+        console.error("Failed to resolve params:", err);
+        setError("Failed to resolve parameters.");
+      }
     };
 
-    fetchParams();
+    resolveParams();
   }, [params]);
 
   useEffect(() => {
@@ -42,24 +49,19 @@ const MangaPage = ({ params }: { params: Promise<{ id: string }> }) => {
 
     const fetchMangaData = async () => {
       setLoading(true);
+      setError(null);
       try {
-        const response = await fetch(`https://api.mangadex.org/manga/${id}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
+        const response = await axios.get<MangaResponse>(`/api/summary`, {
+          params: { id },
         });
 
-        if (!response.ok) {
+        if (!response.data) {
           throw new Error("Failed to fetch manga data");
         }
 
-        const mangaData = await response.json() as MangaResponse;
-        setManga(mangaData);
-        console.log(mangaData);
+        setManga(response.data);
       } catch (err: any) {
-        setError(err.message);
+        setError(err.message || "An error occurred while fetching manga data");
       } finally {
         setLoading(false);
       }
@@ -68,12 +70,12 @@ const MangaPage = ({ params }: { params: Promise<{ id: string }> }) => {
     fetchMangaData();
   }, [id]);
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
   if (loading) {
     return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
   }
 
   if (!manga || !manga.data) {
@@ -82,7 +84,9 @@ const MangaPage = ({ params }: { params: Promise<{ id: string }> }) => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold text-center mb-4">{manga.data.attributes.title.en}</h1>
+      <h1 className="text-4xl font-bold text-center mb-4">
+        {manga.data.attributes.title.en}
+      </h1>
       <div className="mb-8">
         <h2 className="text-2xl font-semibold text-center mb-2">Description</h2>
         <p className="text-lg text-center">{manga.data.attributes.description.en}</p>
@@ -92,7 +96,12 @@ const MangaPage = ({ params }: { params: Promise<{ id: string }> }) => {
         <p className="text-lg text-center">{manga.data.attributes.status}</p>
       </div>
       <div className="text-center">
-        <Link href="/manga" className="text-lg font-semibold text-blue-500 hover:text-blue-700">Back to Manga List</Link>
+        <Link
+          href="/manga"
+          className="text-lg font-semibold text-blue-500 hover:text-blue-700"
+        >
+          Back to Manga List
+        </Link>
       </div>
     </div>
   );
