@@ -1,3 +1,4 @@
+"use client"
 import { useState, useEffect } from "react";
 import { fetchRandomImage } from "@/utilities/fetchImages";
 import Image from "next/image";
