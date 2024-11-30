@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "tecdn.b-cdn.net",
       },
+      {
+        protocol: "https",
+        hostname: "i.waifu.pics",
+      }
     ],
   },
   webpack: (config) => {

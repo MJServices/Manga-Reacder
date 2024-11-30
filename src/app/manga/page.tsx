@@ -1,5 +1,6 @@
 "use client";
 import { fetchRandomImage } from "@/utilities/fetchImages";
+import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
@@ -63,7 +64,7 @@ const Page = () => {
             className="manga-item relative rounded-lg overflow-hidden border border-emerald-700 shadow-md bg-[#1a2e2b] hover:shadow-xl transition duration-300 ease-in-out h-[600px]"
           >
             {animeImage && (
-              <img
+              <Image
                 src={animeImage[count++]}
                 alt="Anime Image"
                 className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-300 ease-in-out"
