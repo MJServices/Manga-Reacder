@@ -17,7 +17,7 @@ export async function generateMetadata({
   params: any 
 }): Promise<Metadata> {
   return {
-    title: `Profile - ${params.id}`,
+    title: `User Profile`,
     description: `User profile page`
   };
 }

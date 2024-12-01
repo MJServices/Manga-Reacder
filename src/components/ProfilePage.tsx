@@ -1,14 +1,10 @@
-// components/ProfilePage.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { getUser } from "@/utilities/getUser";
 
 interface ProfilePageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
 interface UserProfile {
@@ -23,63 +19,94 @@ interface UserUpdates {
 }
 
 const ProfilePage: React.FC<ProfilePageProps> = ({ params }) => {
-  const [profile, setProfile] = useState<UserProfile>({
-    _id: "",
-    username: "",
-    email: ""
-  });
-
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [updates, setUpdates] = useState<UserUpdates>({
     username: "",
-    email: ""
+    email: "",
   });
-
-  const [isLoading, setIsLoading] = useState(true);
+  const [id, setId] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Resolve the params and set the ID
   useEffect(() => {
-    const fetchUser = async () => {
+    const resolveParams = async () => {
       try {
-        setIsLoading(true);
-        const user = await getUser(params.id);
-        setProfile(user);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        setError("Failed to load user profile");
+        const resolvedParams = await params;
+        setId(resolvedParams.id);
+      } catch (err) {
+        console.error("Failed to resolve params:", err);
+        setError("Failed to resolve parameters.");
+      }
+    };
+
+    resolveParams();
+  }, [params]);
+
+  // Fetch the user profile when ID is available
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchUserProfile = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response = await fetch(`/api/getUser`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id }),
+        });
+        const data = await response.json();
+        if (!data) {
+          throw new Error("Failed to fetch user profile");
+        }
+
+        setProfile(data);
+      } catch (err: any) {
+        console.error("Error fetching user profile:", err);
+        setError(
+          err.response?.data?.error ||
+            "An error occurred while fetching the profile."
+        );
+      } finally {
         setIsLoading(false);
       }
     };
 
-    fetchUser();
-  }, [params.id]);
+    fetchUserProfile();
+  }, [id]);
 
+  // Handle profile updates
   const handleUserChange = async () => {
-    try {
-      if (!profile._id) {
-        setError("No user ID available");
-        return;
-      }
+    if (!profile) {
+      setError("No profile data available to update.");
+      return;
+    }
 
-      const response = await axios.put("/api/profile", {
+    try {
+      const response = await axios.put<UserProfile>("/api/profile", {
         id: profile._id,
         username: updates.username || profile.username,
         email: updates.email || profile.email,
       });
 
-      setProfile(response.data.updatedUser);
+      setProfile(response.data);
       setUpdates({ username: "", email: "" });
       setError(null);
-    } catch (error) {
-      console.error("Error updating user data:", error);
-      setError("Failed to update profile");
+      location.reload();
+    } catch (err: any) {
+      console.error("Error updating profile:", err);
+      setError(err.response?.data?.error || "Failed to update profile.");
     }
   };
 
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <p className="text-white">Loading profile...</p>
+        <p>Loading profile...</p>
       </div>
     );
   }
@@ -92,17 +119,21 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ params }) => {
     );
   }
 
+  if (!profile) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <p>No user profile available.</p>
+      </div>
+    );
+  }
+
   return (
     <section className="bg-zinc-900 text-white">
       <div className="min-h-screen flex items-center justify-center">
         <div className="bg-zinc-800 p-8 rounded-lg shadow-lg w-full max-w-md">
-          <h2 className="text-2xl font-bold mb-6 text-emerald-400">User Profile</h2>
-
-          {error && (
-            <div className="mb-4 text-red-500 bg-red-100 p-2 rounded">
-              {error}
-            </div>
-          )}
+          <h2 className="text-2xl font-bold mb-6 text-emerald-400">
+            User Profile
+          </h2>
 
           <div className="mb-4">
             <label className="block text-sm font-medium mb-2">Username</label>
@@ -112,14 +143,15 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ params }) => {
               readOnly
               className="bg-zinc-700 text-white p-2 rounded-lg w-full"
             />
-            <label className="block text-sm font-medium mb-2 mt-2">Change Username</label>
+            <label className="block text-sm font-medium mb-2 mt-2">
+              Change Username
+            </label>
             <input
               type="text"
               value={updates.username}
-              onChange={(e) => setUpdates({ 
-                ...updates, 
-                username: e.target.value 
-              })}
+              onChange={(e) =>
+                setUpdates({ ...updates, username: e.target.value })
+              }
               className="bg-zinc-700 text-white p-2 rounded-lg w-full"
             />
           </div>
@@ -132,14 +164,15 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ params }) => {
               readOnly
               className="bg-zinc-700 text-white p-2 rounded-lg w-full"
             />
-            <label className="block text-sm font-medium mb-2 mt-2">Change Email</label>
+            <label className="block text-sm font-medium mb-2 mt-2">
+              Change Email
+            </label>
             <input
               type="email"
               value={updates.email}
-              onChange={(e) => setUpdates({ 
-                ...updates, 
-                email: e.target.value 
-              })}
+              onChange={(e) =>
+                setUpdates({ ...updates, email: e.target.value })
+              }
               className="bg-zinc-700 text-white p-2 rounded-lg w-full"
             />
           </div>
