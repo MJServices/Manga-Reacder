@@ -1,16 +1,42 @@
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
+interface UserPayload {
+  id: string;
+  username: string;
+  email: string;
+}
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
+  const [user, setUser] = useState({
+    id: "",
+    username: "",
+    email: "",
+  });
 
   const handleLogout = () => {
-    // Logic to handle logout (e.g., clear tokens, make API call, etc.)
     setIsLoggedIn(false);
   };
-
+  useEffect(() => {
+    async function checkLoginStatus() {
+      const res = fetch("/api/takeCookie", { method: "GET" });
+      res.then((res) => {
+          if (res.status === 200) {
+            const data = res.json();
+            data.then((res)=>{
+              let { id, username, email } = res.cookie;
+              console.log(id, username, email);
+              setUser({ id, username, email });
+            })
+            setIsLoggedIn(true);
+          }
+      });
+    }
+    checkLoginStatus()
+  }, []);
+  
   return (
     <>
       <header className="flex justify-between items-center h-[80px] md:h-[80px] px-4 md:px-16">
@@ -19,22 +45,37 @@ function Navbar() {
         </div>
         <div className="hidden md:block self-end">
           {isLoggedIn ? (
-            <button
-              onClick={handleLogout}
-              className="text-zinc-300 hover:text-white hover:border-none overflow-hidden text-xl border relative border-zinc-200 bg py-2 px-5 rounded-3xl before:content-[''] before:h-full before:w-full before:absolute before:bg-[#FF4747] before:left-0 before:top-[110%] before:rounded-3xl before:transition-all before:duration-300 hover:before:top-0 hover:before:rounded-[0]"
-            >
-              <div className="flex justify-center items-center relative z-[20]">Log Out</div>
-            </button>
+            <div className="btn-cont flex gap-4">
+              <button
+                onClick={handleLogout}
+                className="text-zinc-300 hover:text-white hover:border-none overflow-hidden text-xl border relative border-zinc-200 bg py-2 px-5 rounded-3xl before:content-[''] before:h-full before:w-full before:absolute before:bg-[#FF4747] before:left-0 before:top-[110%] before:rounded-3xl before:transition-all before:duration-300 hover:before:top-0 hover:before:rounded-[0]"
+              >
+                <div className="flex justify-center items-center relative z-[20]">
+                  Log Out
+                </div>
+              </button>
+              <Link href={`/profile/${user.id}`}>
+              <button className="text-zinc-300 hover:text-white hover:border-none overflow-hidden text-xl border relative border-zinc-200 bg py-2 px-5 rounded-3xl before:content-[''] before:h-full before:w-full before:absolute before:bg-[#35C718] before:left-0 before:top-[110%] before:rounded-3xl before:transition-all before:duration-300 hover:before:top-0 hover:before:rounded-[0]">
+                  <div className="flex justify-center items-center relative z-[20]">
+                    Profile
+                  </div>
+                  </button>
+              </Link>
+            </div>
           ) : (
             <>
               <Link href="/signup">
                 <button className="text-zinc-300 hover:text-white hover:border-none overflow-hidden text-xl border relative border-zinc-200 bg py-2 px-5 rounded-3xl before:content-[''] before:h-full before:w-full before:absolute before:bg-[#35C718] before:left-0 before:top-[110%] before:rounded-3xl before:transition-all before:duration-300 hover:before:top-0 hover:before:rounded-[0]">
-                  <div className="flex justify-center items-center relative z-[20]">Sign Up</div>
+                  <div className="flex justify-center items-center relative z-[20]">
+                    Sign Up
+                  </div>
                 </button>
               </Link>
               <Link href="/login">
                 <button className="text-zinc-300 hover:text-white hover:border-none overflow-hidden text-xl border relative border-zinc-200 bg py-2 px-5 rounded-3xl before:content-[''] before:h-full before:w-full before:absolute before:bg-[#35C718] before:left-0 before:top-[110%] before:rounded-3xl before:transition-all before:duration-300 hover:before:top-0 hover:before:rounded-[0] ml-16">
-                  <div className="flex justify-center items-center relative z-[20]">Log In</div>
+                  <div className="flex justify-center items-center relative z-[20]">
+                    Log In
+                  </div>
                 </button>
               </Link>
             </>
@@ -77,12 +118,21 @@ function Navbar() {
           </button>
           <div className="mt-8">
             {isLoggedIn ? (
-              <button
+              <div className="btn-cont">
+                  <button
                 onClick={handleLogout}
                 className="block bg-red-600 text-white px-4 py-2 rounded-full text-center hover:bg-red-700 transition duration-300 mb-4"
               >
                 Log Out
               </button>
+                <Link href={`/profile/${user.id}`}>
+                <button className="text-zinc-300 hover:text-white hover:border-none overflow-hidden text-xl border relative border-zinc-200 bg py-2 px-5 rounded-3xl before:content-[''] before:h-full before:w-full before:absolute before:bg-[#35C718] before:left-0 before:top-[110%] before:rounded-3xl before:transition-all before:duration-300 hover:before:top-0 hover:before:rounded-[0]">
+                    <div className="flex justify-center items-center relative z-[20]">
+                      Profile
+                    </div>
+                    </button>
+                </Link>
+              </div>
             ) : (
               <>
                 <Link
