@@ -1,5 +1,6 @@
 "use client";
 import Chat from "@/components/Chat";
+import Cursor from "@/components/Cursor";
 import FloatingChits from "@/components/FloatingChits";
 import Intro from "@/components/Intro";
 import LandingPage from "@/components/LandingPage"; // Import LandingPage component
@@ -25,7 +26,7 @@ const Page = () => {
   }, [onChatEndDetails])
   
   return (
-    <main>
+    <main suppressHydrationWarning>
       <div className="transition-container">
         {typeof childData === "boolean" ? (
           childData ? (
@@ -73,6 +74,8 @@ const Page = () => {
           }
         }
       `}</style>
+      <Cursor/>
+
     </main>
   );
 };

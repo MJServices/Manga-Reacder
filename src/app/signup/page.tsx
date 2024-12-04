@@ -1,6 +1,9 @@
 "use client";
 
+import Cursor from "@/components/Cursor";
+import { useGSAP } from "@gsap/react";
 import axios from "axios";
+import gsap from "gsap";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -17,6 +20,15 @@ const page = () => {
     const [loading, setLoading] = React.useState(false);
     const [errorMsg, setErrorMsg] = useState("");
 
+    useGSAP(()=>{
+        gsap.from("section form", {
+            duration: 1,
+            opacity: 0,
+            delay: 1,
+            y: 0,
+            ease: "power2.out",
+        });
+    }, [])
     const onSignup = async () => {
         setLoading(true); // Set loading to true at the start of the function
         try {

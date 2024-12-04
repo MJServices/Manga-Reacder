@@ -13,6 +13,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@gsap/react": "^2.1.1",
     "@netlify/plugin-nextjs": "^5.8.1",
     "anime-images-api": "^2.0.0",
     "axios": "^1.7.7",

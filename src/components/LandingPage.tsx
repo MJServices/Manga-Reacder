@@ -4,7 +4,7 @@ import Navbar from "./Navbar";
 
 const LandingPage = () => {
   return (
-    <section className="w-screen h-[100svh] overflow-hidden">
+    <section className="w-screen h-[100svh] overflow-hidden" suppressHydrationWarning>
       <BgVideo />
       <section className="relative z-[2] w-screen h-screen overflow-hidden">
         <Navbar/>

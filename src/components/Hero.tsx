@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Link from "next/link";
+import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -16,15 +17,18 @@ const oswald = Oswald({
 });
 
 const Hero = () => {
-  useEffect(() => {
-    gsap.to("span", {
-      height: "68px",
+  useGSAP(() => {
+    const tl = gsap.timeline();
+    tl.from(("section .group"),{
+      opacity: 0,
       duration: 1,
-      delay: 0.5,
-      ease: "power1.out",
-    });
+      delay: 1
+    })
+    tl.to(("section span"),{
+      height: "70px",
+      duration: 2,
+    })
   }, []);
-
   return (
     <section className="h-[87.5vh] w-screen flex flex-col items-center justify-between md:block pt-7 md:pt-24 px-3 md:px-16 hero-section relative">
         <div className="scroll flex justify-center items-center absolute left-[44vw] -translate-x-1/2 h-16 w-16 rounded-full bottom-2 border border-zinc-200 animate-bounce">

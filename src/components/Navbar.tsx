@@ -1,3 +1,5 @@
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -7,7 +9,18 @@ interface UserPayload {
   username: string;
   email: string;
 }
+
 function Navbar() {
+  useGSAP(()=>{
+    const tl = gsap.timeline();
+    tl.from(("header"), {
+      y: 40,
+      opacity: 0,
+      duration: 1,
+      stagger: 0.5
+    })
+  }, [])  
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
   const [user, setUser] = useState({
@@ -17,6 +30,12 @@ function Navbar() {
   });
 
   const handleLogout = () => {
+    const res = fetch("/api/logout", { method: "GET" });
+    res.then((res) => {
+      if (res.status === 200) {
+        console.log("Logout successful");
+      }
+    })
     setIsLoggedIn(false);
   };
   useEffect(() => {

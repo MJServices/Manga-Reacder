@@ -130,20 +130,20 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ params }) => {
   return (
     <section className="bg-zinc-900 text-white">
       <div className="min-h-screen flex items-center justify-center">
-        <div className="bg-zinc-800 p-8 rounded-lg shadow-lg w-full max-w-md">
+        <div className="bg-zinc-800 p-8 rounded-lg shadow-lg w-[100vw] h-[100vh] flex flex-col gap-3 justify-center max-w-md md:h-auto">
           <h2 className="text-2xl font-bold mb-6 text-emerald-400">
             User Profile
           </h2>
-
+  
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2">Username</label>
+            <label className="block text-base font-medium mb-2">Username</label>
             <input
               type="text"
               value={profile.username}
               readOnly
-              className="bg-zinc-700 text-white p-2 rounded-lg w-full"
+              className="bg-zinc-700 text-white p-3 rounded-lg w-full"
             />
-            <label className="block text-sm font-medium mb-2 mt-2">
+            <label className="block text-base font-medium mb-2 mt-2">
               Change Username
             </label>
             <input
@@ -152,19 +152,19 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ params }) => {
               onChange={(e) =>
                 setUpdates({ ...updates, username: e.target.value })
               }
-              className="bg-zinc-700 text-white p-2 rounded-lg w-full"
+              className="bg-zinc-700 text-white p-3 rounded-lg w-full"
             />
           </div>
-
+  
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2">Email</label>
+            <label className="block text-base font-medium mb-2">Email</label>
             <input
               type="email"
               value={profile.email}
               readOnly
-              className="bg-zinc-700 text-white p-2 rounded-lg w-full"
+              className="bg-zinc-700 text-white p-3 rounded-lg w-full"
             />
-            <label className="block text-sm font-medium mb-2 mt-2">
+            <label className="block text-base font-medium mb-2 mt-2">
               Change Email
             </label>
             <input
@@ -173,13 +173,14 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ params }) => {
               onChange={(e) =>
                 setUpdates({ ...updates, email: e.target.value })
               }
-              className="bg-zinc-700 text-white p-2 rounded-lg w-full"
+              className="bg-zinc-700 text-white p-3 rounded-lg w-full"
             />
           </div>
-
+  
           <button
             onClick={handleUserChange}
-            className="bg-emerald-500 hover:bg-emerald-600 text-white p-2 rounded-lg w-full"
+            className="bg-emerald-500 hover:bg-emerald-600 text-emerald
+             p-2 rounded-lg w-full"
           >
             Update Profile
           </button>

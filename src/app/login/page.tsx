@@ -1,12 +1,23 @@
 "use client";
 
+import { useGSAP } from "@gsap/react";
 import axios from "axios";
+import gsap from "gsap";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 
 const page = () => {
+  useGSAP(()=>{
+    gsap.from("section form", {
+        duration: 1,
+        opacity: 0,
+        delay: 1,
+        y: 0,
+        ease: "power2.out",
+    });
+}, [])
     const router = useRouter();
     const [user, setUser] = React.useState({
         email: "",

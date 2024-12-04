@@ -4,6 +4,15 @@ import { fetchRandomImage } from "@/utilities/fetchImages";
 import Image from "next/image";
 import Link from "next/link";
 import { fetchMangaList } from "@/utilities/mangaFetcher";
+import { Oswald } from "next/font/google";
+import gsap from "gsap"
+import { useGSAP } from "@gsap/react";
+
+const oswald = Oswald({
+  subsets: ["latin"],
+  variable: "--font-oswald",
+  weight: ["300", "400", "500", "700"],
+});
 
 const Page = () => {
   interface MangaItem {
@@ -20,7 +29,16 @@ const Page = () => {
 
   const [animeImages, setAnimeImages] = useState<string[]>([]); // Store an array of image URLs
   const [manga, setManga] = useState<MangaItem[]>([]);
-
+ 
+  useGSAP(()=>{
+    const tl = gsap.timeline()
+    tl.from("h1",{
+      y: 40,
+      opacity: 0,
+      duration: 1
+    })
+    tl.from("section section", { opacity: 0, y: 40, duration: 1, stagger: 0.1, ease: "liniear" });
+  }, [animeImages])
   useEffect(() => {
     // Fetch random images
     const fetchImages = async () => {
@@ -54,15 +72,15 @@ const Page = () => {
 
   return (
     <section className="bg-[#142422] min-h-screen p-6">
-      <h1 className="text-4xl font-bold text-center text-emerald-500 mb-6">
+      <h1 className={`text-4xl md:text-9xl md:py-5 font-bold text-center text-emerald-500 mb-6 ${oswald.className} uppercase font-semibold tracking-tighter`}>
         Anime and Manga List
       </h1>
-      <div className="manga-list grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {Array.isArray(manga) && manga.length > 0 ? (
+      <section className="manga-list grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {Array.isArray(manga) && animeImages.length > 0 ?  (
           manga.map((item, index) => (
             <div
               key={item.id}
-              className="manga-item relative rounded-lg overflow-hidden border border-emerald-700 shadow-md bg-[#1a2e2b] hover:shadow-xl transition duration-300 ease-in-out h-[600px]"
+              className="card manga-item relative rounded-lg overflow-hidden border border-emerald-700 shadow-md bg-[#1a2e2b] hover:shadow-xl transition duration-300 ease-in-out h-[600px] "
             >
               {/* Display a random anime image for each manga item */}
               {animeImages[index] && (
@@ -93,9 +111,9 @@ const Page = () => {
             </div>
           ))
         ) : (
-          <p className="text-center text-gray-300">No manga data available</p>
+          <p className="text-center text-gray-300">Loading Manga Data...</p>
         )}
-      </div>
+      </section>
     </section>
   );
 };
